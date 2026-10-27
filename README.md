@@ -75,7 +75,7 @@ Windows PowerShell:
 
 **Дополнительная память:**
 
-В памяти при вызове функции образуется 4 массивных ячейки - крупные таблицы productsById, seen, selection и excludedSet. Размеры ячеек пропорциональны увеличению/уменьшению входных данных и повторов продуктов. От повторов особенно зависит seen: она растет пропорционально увеличению числа уникальных продуктов.
+В памяти при вызове функции образуется 4 массивных ячейки - крупные таблицы productsById, seen, selection и excludedSet. Размеры ячеек пропорциональны увеличению/уменьшению входных данных и повторов продуктов. Касаемо seen: он растет пропорционально увеличению числа уникальных продуктов.
 Реальный размер зависит от особенностей работы конкретной JVM. Через О зависимость можно объяснить напрямую: O(p+r+e). Если входные данные вырастут вдвое, занимаемая память вырастет примерно вдвое. Про память результата - прямая зависимость от количества продуктов (k): О(k). Та же логика с увеличением вдвое
 
 ### Тесты
@@ -87,11 +87,11 @@ Windows PowerShell:
 | Обычная подборка; порядок рекомендаций отличается от порядка каталога | `selectsAvailableProductsInRecommendationOrder` |
 | Повторяющиеся рекомендации и исключения | `selectsAvailableProductsInRecommendationOrder`, `returnEmptyListWithEqualsRecommendationsAndExcludes` |
 | Недоступные, исключённые и неизвестные товары | `selectsAvailableProductsInRecommendationOrder`, `returnEmptyListWhenThereAreNoAvailableOrNotExcludedOrNoCorrectProducts` |
-| Пустой каталог, пустые рекомендации, пустые исключения | `returnEmptyListWhenEmptyEntry`, `returnsEmptyListWhenThereAreNoRecommendations` |
+| Пустой каталог, пустые рекомендации, пустые исключения | `returnEmptyListWhenEmptyEntry`, `returnsEmptyListWhenThereAreNoRecommendations`, `returnsEmptyListWhenCatalogIsEmptyAndRecommendationsArePresent`, `selectsProductsWhenExcludedListIsEmpty` |
 | Ни один товар не подходит | `returnEmptyListWithEqualsRecommendationsAndExcludes`, `returnEmptyListWhenThereAreNoAvailableOrNotExcludedOrNoCorrectProducts` |
 | Входные данные не изменяются; повторные вызовы независимы | `safetyOfEntryObject`, `independenceOfResultsObjects` |
 
-Пустой каталог, рекомендации и исключения проверяются одновременно в `returnEmptyListWhenEmptyEntry`; отдельно пустые рекомендации и исключения проверяются в `returnsEmptyListWhenThereAreNoRecommendations`. Пустой каталог и пустые исключения при непустых остальных входных списках отдельно не проверяются.
+`returnEmptyListWhenEmptyEntry` проверяет случай, когда все три входных списка пусты. Пустой каталог с непустыми рекомендациями проверяется в `returnsEmptyListWhenCatalogIsEmptyAndRecommendationsArePresent`, а пустой список исключений при наличии подходящих товаров — в `selectsProductsWhenExcludedListIsEmpty`.
 
 ## Необязательное продолжение
 
