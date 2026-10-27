@@ -33,6 +33,32 @@ class ProductSelectionTest {
     }
 
     @Test
+    fun returnsEmptyListWhenCatalogIsEmptyAndRecommendationsArePresent() {
+        val result = selectProducts(
+            products = emptyList(),
+            recommendedIds = listOf(1L, 2L),
+            excludedIds = emptyList()
+        )
+
+        assertEquals(emptyList<Product>(), result)
+    }
+
+    @Test
+    fun selectsProductsWhenExcludedListIsEmpty() {
+        val keyboard = Product(1, "Keyboard", true)
+        val mouse = Product(2, "Mouse", true)
+        val products = listOf(keyboard, mouse)
+
+        val result = selectProducts(
+            products = products,
+            recommendedIds = listOf(2L, 1L),
+            excludedIds = emptyList()
+        )
+
+        assertEquals(listOf(mouse, keyboard), result)
+    }
+
+    @Test
     fun returnDefaultSelectionWithDifferentCatalogue() {
         val mouse = Product(2, "Mouse", false)
         val keyboard = Product(1, "Keyboard", true)
