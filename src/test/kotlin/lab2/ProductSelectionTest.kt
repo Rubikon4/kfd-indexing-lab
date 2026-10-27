@@ -2,6 +2,7 @@ package lab2
 
 import lab2.Product
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotSame
 import org.junit.jupiter.api.Test
 
 class ProductSelectionTest {
@@ -77,12 +78,55 @@ class ProductSelectionTest {
         assertEquals(emptyList<Product>(), result)
     }
 
-/* TODO: проверять тестами
-    V обычную подборку и сохранение порядка при другом порядке каталога;
-    V повторяющиеся рекомендации и исключения;
-    V недоступные, исключённые и неизвестные товары;
-    X пустой каталог, пустые рекомендации и пустые исключения;
-    X случай, когда ни один товар не подходит;
-    X сохранность входных данных и независимость результатов повторных вызовов.
- */
+    @Test
+    fun returnEmptyListWhenEmptyEntry() {
+        val products = emptyList<Product>()
+        val recommendedIds = emptyList<Long>()
+        val excludedIds = emptyList<Long>()
+
+        val result = selectProducts(products, recommendedIds, excludedIds)
+
+        assertEquals(emptyList<Product>(), result)
+    }
+
+    @Test
+    fun safetyOfEntryObject() {
+        val products = listOf(
+            Product(1, "Keyboard", true),
+            Product(2, "Mouse", false),
+            Product(3, "Monitor", true),
+            Product(4, "Webcam", true)
+        )
+        val productsCopy = products.toList()
+
+        val recommendedIds = listOf(3L, 2L, 3L, 99L, 1L, 4L)
+        val recommendedIdsCopy = recommendedIds.toList()
+
+        val excludedIds = listOf(1L)
+        val excludedIdsCopy = excludedIds.toList()
+
+        val check = selectProducts(products, recommendedIds, excludedIds)
+
+        assertEquals(productsCopy, products)
+        assertEquals(recommendedIdsCopy, recommendedIds)
+        assertEquals(excludedIdsCopy, excludedIds)
+    }
+
+    @Test
+    fun independenceOfResultsObjects() {
+        val products = listOf(
+            Product(1, "Keyboard", true),
+            Product(2, "Mouse", false),
+            Product(3, "Monitor", true),
+            Product(4, "Webcam", true)
+        )
+        val recommendedIds = listOf(3L, 2L, 3L, 99L, 1L, 4L)
+        val excludedIds = listOf(1L)
+
+        val result_1 = selectProducts(products, recommendedIds, excludedIds)
+        val result_2 = selectProducts(products, recommendedIds, excludedIds)
+
+        assertEquals(result_1, result_2)
+        assertNotSame(result_1, result_2)
+    }
 }
